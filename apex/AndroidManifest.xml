@@ -29,6 +29,6 @@
   <uses-sdk
       android:minSdkVersion="31"
       android:maxSdkVersion="32"
-      android:targetSdkVersion="31"
+      android:targetSdkVersion="32"
   />
 </manifest>
