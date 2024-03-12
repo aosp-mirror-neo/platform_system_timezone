@@ -38,5 +38,7 @@
         <option name="mainline-module-package-name" value="com.google.android.tzdata4" />
         <!-- This module is found on U devices. -->
         <option name="mainline-module-package-name" value="com.google.android.tzdata5" />
+        <!-- This module is found on V devices. -->
+        <option name="mainline-module-package-name" value="com.google.android.tzdata6" />
     </object>
 </configuration>
