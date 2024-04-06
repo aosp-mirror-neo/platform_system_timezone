@@ -22,7 +22,7 @@ ifeq ($(WITH_HOST_DALVIK),true)
 # Simulate the time zone data module.
 include $(CLEAR_VARS)
 LOCAL_MODULE := icu_tzdata.dat_host_tzdata_apex
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-MIT SPDX-license-identifier-Unicode-DFS
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-MIT SPDX-license-identifier-Unicode-3.0
 LOCAL_LICENSE_CONDITIONS := notice
 LOCAL_NOTICE_FILE := $(LOCAL_PATH)/LICENSE
 LOCAL_IS_HOST_MODULE := true
