@@ -114,10 +114,9 @@ def BuildIcuData(iana_data_tar_file):
   # Create ICU system image files.
   icuutil.MakeAndCopyIcuDataFiles(icu_build_dir)
 
-  # Create the ICU overlay time zone file.
+  # Create the ICU's .res time zone files.
   icu_overlay_dir = '%s/icu_overlay' % timezone_output_data_dir
-  icu_overlay_dat_file = '%s/icu_tzdata.dat' % icu_overlay_dir
-  icuutil.MakeAndCopyOverlayTzIcuData(icu_build_dir, icu_overlay_dat_file)
+  icuutil.MakeAndCopyIcuTzFiles(icu_build_dir, icu_overlay_dir)
 
   # There are files in ICU which generation depends on ICU itself,
   # so multiple builds might be needed.

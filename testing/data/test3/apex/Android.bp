@@ -30,7 +30,10 @@ apex {
         "apex_tz_version_test3",
         "apex_tzlookup.xml_test3",
         "apex_tzdata_test3",
-        "apex_icu_tzdata.dat_test3",
+        "apex_zoneinfo64.res_test3",
+        "apex_windowsZones.res_test3",
+        "apex_timezoneTypes.res_test3",
+        "apex_metaZones.res_test3",
     ],
 
     // installable: false as we do not want test APEX versions in the system

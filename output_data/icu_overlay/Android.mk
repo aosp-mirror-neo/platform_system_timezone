@@ -26,7 +26,47 @@ LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-MIT S
 LOCAL_LICENSE_CONDITIONS := notice
 LOCAL_NOTICE_FILE := $(LOCAL_PATH)/LICENSE
 LOCAL_IS_HOST_MODULE := true
-LOCAL_SRC_FILES := icu_tzdata.dat
+LOCAL_SRC_FILES := metaZones.res
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_STEM := $(LOCAL_SRC_FILES)
+LOCAL_MODULE_PATH := $(HOST_OUT)/com.android.tzdata/etc/icu
+LOCAL_REQUIRED_MODULES := icu_timezoneTypes.res_host_tzdata_apex icu_windowsZones.res_host_tzdata_apex icu_zoneinfo64.res_host_tzdata_apex
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := icu_timezoneTypes.res_host_tzdata_apex
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-MIT SPDX-license-identifier-Unicode-DFS
+LOCAL_LICENSE_CONDITIONS := notice
+LOCAL_NOTICE_FILE := $(LOCAL_PATH)/LICENSE
+LOCAL_IS_HOST_MODULE := true
+LOCAL_SRC_FILES := timezoneTypes.res
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_STEM := $(LOCAL_SRC_FILES)
+LOCAL_MODULE_PATH := $(HOST_OUT)/com.android.tzdata/etc/icu
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := icu_windowsZones.res_host_tzdata_apex
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-MIT SPDX-license-identifier-Unicode-DFS
+LOCAL_LICENSE_CONDITIONS := notice
+LOCAL_NOTICE_FILE := $(LOCAL_PATH)/LICENSE
+LOCAL_IS_HOST_MODULE := true
+LOCAL_SRC_FILES := windowsZones.res
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_STEM := $(LOCAL_SRC_FILES)
+LOCAL_MODULE_PATH := $(HOST_OUT)/com.android.tzdata/etc/icu
+include $(BUILD_PREBUILT)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := icu_zoneinfo64.res_host_tzdata_apex
+LOCAL_LICENSE_KINDS := SPDX-license-identifier-BSD SPDX-license-identifier-MIT SPDX-license-identifier-Unicode-DFS
+LOCAL_LICENSE_CONDITIONS := notice
+LOCAL_NOTICE_FILE := $(LOCAL_PATH)/LICENSE
+LOCAL_IS_HOST_MODULE := true
+LOCAL_SRC_FILES := zoneinfo64.res
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_STEM := $(LOCAL_SRC_FILES)

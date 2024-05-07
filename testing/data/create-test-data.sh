@@ -49,8 +49,11 @@ TEST_DIR=test3
 # Create fake data input files.
 ./transform-data-files.sh ${REFERENCE_DATA_FILES} ${IANA_VERSION} ./${TEST_DIR}/output_data
 
-# Corrupt icu_tzdata.dat by truncating it
-truncate --size 27766 ${TEST_DIR}/output_data/icu_overlay/icu_tzdata.dat
+# Corrupt .res files by truncating it
+truncate --size 7766 ${TEST_DIR}/output_data/icu_overlay/zoneinfo64.res
+truncate --size 7766 ${TEST_DIR}/output_data/icu_overlay/windowsZones.res
+truncate --size 7766 ${TEST_DIR}/output_data/icu_overlay/timezoneTypes.res
+truncate --size 7766 ${TEST_DIR}/output_data/icu_overlay/metaZones.res
 
 # Create tz version file.
 mkdir -p ${TEST_DIR}/output_data/version

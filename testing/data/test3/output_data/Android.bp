@@ -76,10 +76,37 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "apex_icu_tzdata.dat_test3",
-    src: "icu_overlay/icu_tzdata.dat",
+    name: "apex_zoneinfo64.res_test3",
+    src: "icu_overlay/zoneinfo64.res",
     licenses: ["system_timezone_testing_test3_output_data_icu_licence"],
-    filename: "icu_tzdata.dat",
+    filename: "zoneinfo64.res",
+    sub_dir: "icu",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_windowsZones.res_test3",
+    src: "icu_overlay/windowsZones.res",
+    licenses: ["system_timezone_testing_test3_output_data_icu_licence"],
+    filename: "windowsZones.res",
+    sub_dir: "icu",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_timezoneTypes.res_test3",
+    src: "icu_overlay/timezoneTypes.res",
+    licenses: ["system_timezone_testing_test3_output_data_icu_licence"],
+    filename: "timezoneTypes.res",
+    sub_dir: "icu",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_metaZones.res_test3",
+    src: "icu_overlay/metaZones.res",
+    licenses: ["system_timezone_testing_test3_output_data_icu_licence"],
+    filename: "metaZones.res",
     sub_dir: "icu",
     installable: false,
 }
