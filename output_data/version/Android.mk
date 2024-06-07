@@ -15,8 +15,6 @@
 
 LOCAL_PATH:= $(call my-dir)
 
-ifeq ($(WITH_HOST_DALVIK),true)
-
 # Host simulations of APEX modules for use by hostdex rules.
 
 # Simulate the time zone data module
@@ -31,5 +29,3 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_STEM := $(LOCAL_SRC_FILES)
 LOCAL_MODULE_PATH := $(HOST_OUT)/com.android.tzdata/etc/tz
 include $(BUILD_PREBUILT)
-
-endif

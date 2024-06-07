@@ -52,17 +52,26 @@ When IANA release new time zone rules, the update process is:
 
 1) Run "download-iana-files.py --data" to update the input_data/iana file.
 2) Make manual modifications to input_data/android files as needed.
-3) There are sometimes code and metadata changes associated with tzdata updates
-  that should be applied to Android's copy of ICU.
-  e.g. see http://bugs.icu-project.org/trac/search?q=2015d
+3) There are sometimes metadata and/or test changes associated with tzdata updates
+  that should be applied to Android's copy of ICU and CLDR.
+  e.g. see https://unicode-org.atlassian.net/issues/?jql=text%20~%20%222024a%2A%22
 4) Run update-tzdata.py to regenerate the system/timezone/output_data,
   system/timezone/testing/data, external/icu runtime files and testing equivalents.
 5) Build/flash a device image with the changes and run CTS:
-    cts-tradefed
-    run cts -m CtsLibcoreTestCases
-    run cts -m CtsIcuTestCases
+    ```
+    $ m cts
+    $ cts-tradefed
+    cts-tf > run cts --include-filter CtsLibcoreTestCases \
+                     --include-filter CtsLibcoreOjTestCases \
+                     --include-filter CtsIcuTestCases \
+                     --include-filter CtsBionicTestCases \
+                     --include-filter CtsTextTestCases \
+                     --include-filter CtsIcu4cTestCases \
+                     --include-filter CtsIcuTestCases
+    ```
    (And any others that you think may have been affected)
-6) Upload, review, submit the changes from external/icu and system/timezone.
+6) Run tests from 5) for every affected Android release.
+7) Upload, review, submit the changes from external/icu, external/cldr and system/timezone.
 
 REMINDER: Any prebuilt APEX files containing time zone data files will also
 need to be regenerated.
@@ -80,15 +89,17 @@ isolate unexpected changes to behavior.
 
 Note that updating the version of zic used to create the tzdata file is
 independent of the copy of zic used by ICU. Also, bionic contains
-a copy of tzcode (e.g. localtime.c) which is based on yet another IANA
-release so compatibility and consistency is a consideration.
+a copy of tzcode (e.g. localtime.c) which is different from system/timezone copy used to generate
+TZif files. For consistency and compatibility purposes Android tries to keep them in sync. The
+latter is controversial as IANA tries to be careful to make newer TZif files readable and correctly
+interpreted by older tzcode and vice versa.
 
 The steps for updating IANA tools are similar to updating IANA data except
 you can use "download-iana-files.py --tools" instead of "--data" and testing
 should be more rigorous.
 
 REMINDER: As above, having updated the tooling then all binaries that contain
-tzdata should also be regenerated. e.g. APK and APEX files.
+tzdata should also be regenerated.
 
 
 Time Zone Data Set Versioning
@@ -110,6 +121,9 @@ The "distro" concept has been replaced by an APEX file containing the same data.
 As the APEX contains the same files we continue to use a shorthand version code.
 See apex/ for details.
 
+Starting from Android V the tzdata APEX through the inclusion of tz data set version numbers in the
+file paths can be installed to a range of Android releases.
+
 Time Zone Data Set Versions have a major and minor version number:
 
 - Major version numbers are mutually incompatible. e.g. v2 is not compatible
@@ -118,12 +132,14 @@ Time Zone Data Set Versions have a major and minor version number:
   will work on a v2.1 device but not a v2.3 device.
 - The minor version is reset to 1 when the major version is incremented.
 
-The most obvious/common change that can occur between Android releases is an
-ICU upgrade, which currently requires a major version increment: Android uses
-the ICU4C's native file format for both ICU4C and ICU4J time zone code which is
-tied to the ICU major version. The main .dat file used by ICU is held in
-external/icu and will naturally be updated when ICU is updated. Less obviously,
-the time zone data set version code and files must be updated as well.
+Historically, the most obvious/common change that could occur between Android releases was an
+ICU upgrade, which required a major version increment: Android used
+the ICU4C's native file format (.dat file) for both ICU4C and ICU4J time zone code which is
+tied to the ICU major version.
+
+The main .dat file used by ICU is held in external/icu and will naturally be updated when
+ICU is updated. But the time zone data set version code is not necessarily updated as part of ICU
+upgrade any more as from V tzdata now ships .res files which are compatible with older ICU releases.
 
 Other examples of changes that affect format versioning:
 
@@ -138,17 +154,35 @@ Minor version increment:
   - Additional required data in an existing file (e.g. a backwards compatible
     change to tzdata / tzlookup.xml).
 
+Versions mapping
+----------------
+
+|Android release|Major version|
+|---------------|-------------|
+|Android V      | 8           |
+|Android U      | 7           |
+|Android T      | 6           |
+|Android SC v2  | 5           |
+|Android S      | 5           |
+|Android R      | 4           |
+|Android Q      | 3           |
+
+In SC v2 neither ICU nor tzcode-s were updated, hence no major version bump.
+
 
 Changing the Time Zone Data Set Version
 ---------------------------------------
 
-1) Modify android_icu4j/libcore_bridge/src/java/com/android/i18n/timezone/TzDataSetVersion.java
-  - CURRENT_FORMAT_MAJOR_VERSION, CURRENT_FORMAT_MINOR_VERSION
+1) Modify following files:
+    * external/icu/android_icu4j/libcore_bridge/src/java/com/android/i18n/timezone/TzDataSetVersion.java
+      * CURRENT_FORMAT_MAJOR_VERSION and CURRENT_FORMAT_MINOR_VERSION fields.
+    * external/icu/android_icu4j/src/main/java/android/icu/platform/AndroidDataFiles.java
+      * CURRENT_MAJOR_VERSION field.
+    * Version mapping table above.
 2) Run update-tzdata.py to regenerate the system/timezone/output_data,
    system/timezone/testing/data, external/icu runtime files and testing equivalents.
-3) Build/flash a device image with the changes and run CTS tests:
-    atest CtsIcuTestCases
-4) Upload, review, submit the changes from system/timezone and external/icu/.
+3) Build/flash a device image with the changes and run tests from "IANA rules data changes" section.
+4) Upload, review, submit the changes from system/timezone, external/icu and external/cldr.
 
 REMINDER: Any prebuilt apks / apex files (i.e. ones that that contain time zone files)
 will also need to be regenerated after this change.

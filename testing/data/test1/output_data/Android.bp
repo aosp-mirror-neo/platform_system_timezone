@@ -76,37 +76,47 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "apex_zoneinfo64.res_test1",
-    src: "icu_overlay/zoneinfo64.res",
-    licenses: ["system_timezone_testing_test1_output_data_icu_licence"],
-    filename: "zoneinfo64.res",
-    sub_dir: "icu",
+    name: "apex_tz_version_ver8_test1",
+    src: "version/tz_version",
+    filename: "tz_version",
+    sub_dir: "tz/versioned/8",
     installable: false,
 }
 
 prebuilt_etc {
-    name: "apex_windowsZones.res_test1",
-    src: "icu_overlay/windowsZones.res",
-    licenses: ["system_timezone_testing_test1_output_data_icu_licence"],
-    filename: "windowsZones.res",
-    sub_dir: "icu",
+    name: "apex_tzlookup.xml_ver8_test1",
+    src: "android/tzlookup.xml",
+    filename: "tzlookup.xml",
+    sub_dir: "tz/versioned/8",
     installable: false,
 }
 
 prebuilt_etc {
-    name: "apex_timezoneTypes.res_test1",
-    src: "icu_overlay/timezoneTypes.res",
-    licenses: ["system_timezone_testing_test1_output_data_icu_licence"],
-    filename: "timezoneTypes.res",
-    sub_dir: "icu",
+    name: "apex_telephonylookup.xml_ver8_test1",
+    src: "android/telephonylookup.xml",
+    filename: "telephonylookup.xml",
+    sub_dir: "tz/versioned/8",
     installable: false,
 }
 
 prebuilt_etc {
-    name: "apex_metaZones.res_test1",
-    src: "icu_overlay/metaZones.res",
+    name: "apex_tzdata_ver8_test1",
+    src: "iana/tzdata",
+    licenses: ["system_timezone_testing_test1_output_data_iana_licence"],
+    filename: "tzdata",
+    sub_dir: "tz/versioned/8",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_icu_res_files_ver8_test1",
+    srcs: [
+        "icu_overlay/zoneinfo64.res",
+        "icu_overlay/metaZones.res",
+        "icu_overlay/timezoneTypes.res",
+        "icu_overlay/windowsZones.res",
+    ],
     licenses: ["system_timezone_testing_test1_output_data_icu_licence"],
-    filename: "metaZones.res",
-    sub_dir: "icu",
+    sub_dir: "tz/versioned/8/icu",
     installable: false,
 }
