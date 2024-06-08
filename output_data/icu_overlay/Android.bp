@@ -44,3 +44,36 @@ license {
         "LICENSE",
     ],
 }
+
+prebuilt_root_host {
+    name: "icu_tzdata.dat_host_tzdata_apex",
+    src: "metaZones.res",
+    filename_from_src: true,
+    relative_install_path: "com.android.tzdata/etc/icu",
+    required: [
+        "icu_timezoneTypes.res_host_tzdata_apex",
+        "icu_windowsZones.res_host_tzdata_apex",
+        "icu_zoneinfo64.res_host_tzdata_apex",
+    ],
+}
+
+prebuilt_root_host {
+    name: "icu_timezoneTypes.res_host_tzdata_apex",
+    src: "timezoneTypes.res",
+    filename_from_src: true,
+    relative_install_path: "com.android.tzdata/etc/icu",
+}
+
+prebuilt_root_host {
+    name: "icu_windowsZones.res_host_tzdata_apex",
+    src: "windowsZones.res",
+    filename_from_src: true,
+    relative_install_path: "com.android.tzdata/etc/icu",
+}
+
+prebuilt_root_host {
+    name: "icu_zoneinfo64.res_host_tzdata_apex",
+    src: "zoneinfo64.res",
+    filename_from_src: true,
+    relative_install_path: "com.android.tzdata/etc/icu",
+}
