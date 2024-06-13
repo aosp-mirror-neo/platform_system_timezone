@@ -51,22 +51,6 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "apex_tzlookup.xml",
-    src: "android/tzlookup.xml",
-    filename: "tzlookup.xml",
-    sub_dir: "tz",
-    installable: false,
-}
-
-prebuilt_etc {
-    name: "apex_telephonylookup.xml",
-    src: "android/telephonylookup.xml",
-    filename: "telephonylookup.xml",
-    sub_dir: "tz",
-    installable: false,
-}
-
-prebuilt_etc {
     name: "apex_tzdata",
     src: "iana/tzdata",
     licenses: ["system_timezone_output_data_iana_licence"],

@@ -65,8 +65,6 @@ apex {
     manifest: "manifest.json",
     prebuilts: [
         "apex_tz_version",
-        "apex_tzlookup.xml",
-        "apex_telephonylookup.xml",
         "apex_tzdata",
         "apex_tz_version_ver8",
         "apex_tzlookup.xml_ver8",
