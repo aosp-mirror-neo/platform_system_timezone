@@ -179,6 +179,8 @@ Changing the Time Zone Data Set Version
     * external/icu/android_icu4j/src/main/java/android/icu/platform/AndroidDataFiles.java
       * CURRENT_MAJOR_VERSION field.
     * Version mapping table above.
+    * system/timezone/output_data/icu_overlay/Android.bp and system/timezone/output_data/android/Android.bp.
+      * Update `relative_install_path` in `prebuilt_root_host` targets.
 2) Run update-tzdata.py to regenerate the system/timezone/output_data,
    system/timezone/testing/data, external/icu runtime files and testing equivalents.
 3) Build/flash a device image with the changes and run tests from "IANA rules data changes" section.
