@@ -46,8 +46,7 @@ license {
 }
 
 prebuilt_root_host {
-    // TODO(mingaleev) Rename this. It's no longer tzdata.dat.
-    name: "icu_tzdata.dat_host_tzdata_apex",
+    name: "tzdata_icu_res_files_host_prebuilts",
     srcs: [
         "metaZones.res",
         "timezoneTypes.res",
