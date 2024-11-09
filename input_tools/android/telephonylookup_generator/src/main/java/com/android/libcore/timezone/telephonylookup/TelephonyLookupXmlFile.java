@@ -52,6 +52,13 @@ final class TelephonyLookupXmlFile {
     private static final String MOBILE_NETWORK_CODE_ATTRIBUTE = "mnc";
     private static final String COUNTRY_ISO_CODE_ATTRIBUTE = "country";
 
+    // <mobile_countries>
+    private static final String MOBILE_COUNTRIES_ELEMENT = "mobile_countries";
+
+    // <mobile_country mcc="123" [default="gu"]>
+    private static final String MOBILE_COUNTRY_ELEMENT = "mobile_country";
+    private static final String DEFAULT_ATTRIBUTE = "default";
+
     static void write(TelephonyLookup telephonyLookup, String outputFile)
             throws XMLStreamException, IOException {
         /*
@@ -60,8 +67,17 @@ final class TelephonyLookupXmlFile {
          *   <networks>
          *     <network mcc="123" mnc="456" country="zz"/>
          *     <network mcc="123" mnc="789" country="zz"/>
-         *     </network>
          *   </networks>
+         *
+         *   <mobile_countries>
+         *     <mobile_country mcc="310"/>
+         *       <country>us</country>
+         *     </mobile_country>
+         *     <mobile_country mcc="340" default="gp">
+         *       <country>gp</country>
+         *       <country>gf</country>
+         *     </mobile_country>
+         *   </mobile_countries>
          * </telephony_lookup>
          */
 
@@ -97,19 +113,31 @@ final class TelephonyLookupXmlFile {
 
     static class TelephonyLookup {
         private final List<Network> networks;
+        private final List<MobileCountry> mobileCountries;
 
-        TelephonyLookup(List<Network> networks) {
+        TelephonyLookup(List<Network> networks, List<MobileCountry> mobileCountries) {
             this.networks = networks;
+            this.mobileCountries = mobileCountries;
         }
 
         static void writeXml(TelephonyLookup telephonyLookup, XMLStreamWriter writer)
                 throws XMLStreamException {
             writer.writeStartElement(TELEPHONY_LOOKUP_ELEMENT);
+
+            // Networks
             writer.writeStartElement(NETWORKS_ELEMENT);
             for (Network network : telephonyLookup.networks) {
                 network.writeXml(network, writer);
             }
             writer.writeEndElement(); // NETWORKS_ELEMENT
+
+            // Mobile Countries
+            writer.writeStartElement(MOBILE_COUNTRIES_ELEMENT);
+            for (MobileCountry mobileCountry : telephonyLookup.mobileCountries) {
+                mobileCountry.writeXml(mobileCountry, writer);
+            }
+            writer.writeEndElement(); // MOBILE_COUNTRIES_ELEMENT
+
             writer.writeEndElement(); // TELEPHONY_LOOKUP_ELEMENT
         }
     }
@@ -133,6 +161,35 @@ final class TelephonyLookupXmlFile {
             writer.writeAttribute(MOBILE_NETWORK_CODE_ATTRIBUTE, network.mnc);
             writer.writeAttribute(COUNTRY_ISO_CODE_ATTRIBUTE, network.countryIsoCode);
             writer.writeEndElement(); // NETWORK_ELEMENT
+        }
+    }
+
+    static class MobileCountry {
+
+        private final String mcc;
+        private final List<String> countryIsoCodes;
+
+        MobileCountry(String mcc, List<String> countryIsoCodes) {
+            this.mcc = Objects.requireNonNull(mcc);
+            this.countryIsoCodes = Objects.requireNonNull(countryIsoCodes);
+        }
+
+        static void writeXml(MobileCountry mobileCountry, XMLStreamWriter writer)
+                throws XMLStreamException {
+            writer.writeStartElement(MOBILE_COUNTRY_ELEMENT);
+            writer.writeAttribute(MOBILE_COUNTRY_CODE_ATTRIBUTE, mobileCountry.mcc);
+
+            if (mobileCountry.countryIsoCodes.size() > 1) {
+                writer.writeAttribute(DEFAULT_ATTRIBUTE, mobileCountry.countryIsoCodes.getFirst());
+            }
+
+            for (String countryIsoCode : mobileCountry.countryIsoCodes) {
+                writer.writeStartElement(COUNTRY_ISO_CODE_ATTRIBUTE);
+                writer.writeCharacters(countryIsoCode);
+                writer.writeEndElement(); // COUNTRY_ISO_CODE_ATTRIBUTE
+            }
+
+            writer.writeEndElement(); // MOBILE_COUNTRY_ELEMENT
         }
     }
 }
