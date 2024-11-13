@@ -18,12 +18,17 @@ package com.android.libcore.timezone.telephonylookup;
 
 import static com.android.libcore.timezone.testing.TestUtils.assertContains;
 import static com.android.libcore.timezone.testing.TestUtils.createFile;
+
 import static junit.framework.Assert.assertEquals;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.android.libcore.timezone.telephonylookup.proto.TelephonyLookupProtoFile;
+import com.android.libcore.timezone.telephonylookup.proto.TelephonyLookupProtoFile.MobileCountry;
+import com.android.libcore.timezone.telephonylookup.proto.TelephonyLookupProtoFile.Network;
+import com.android.libcore.timezone.telephonylookup.proto.TelephonyLookupProtoFile.TelephonyLookup;
 import com.android.libcore.timezone.testing.TestUtils;
+
 import com.google.protobuf.TextFormat;
 
 import org.junit.After;
@@ -35,6 +40,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TelephonyLookupGeneratorTest {
 
@@ -63,80 +70,120 @@ public class TelephonyLookupGeneratorTest {
     }
 
     @Test
-    public void upperCaseCountryIsoCodeIsRejected() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("123", "456", "GB");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_upperCaseCountryIsoCodeIsRejected() throws Exception {
+        Network network = createNetwork("123", "456", "GB");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void unknownCountryIsoCodeIsRejected() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("123", "456", "zx");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_unknownCountryIsoCodeIsRejected() throws Exception {
+        Network network = createNetwork("123", "456", "zx");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void badMccIsRejected_nonNumeric() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("XXX", "456", "gb");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_badMccIsRejected_nonNumeric() throws Exception {
+        Network network = createNetwork("XXX", "456", "gb");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void badMccIsRejected_tooShort() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("12", "456", "gb");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_badMccIsRejected_tooShort() throws Exception {
+        Network network = createNetwork("12", "456", "gb");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void badMccIsRejected_tooLong() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("1234", "567", "gb");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_badMccIsRejected_tooLong() throws Exception {
+        Network network = createNetwork("1234", "567", "gb");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void badMncIsRejected_nonNumeric() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("123", "XXX", "gb");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_badMncIsRejected_nonNumeric() throws Exception {
+        Network network = createNetwork("123", "XXX", "gb");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void badMncIsRejected_tooShort() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("123", "4", "gb");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_badMncIsRejected_tooShort() throws Exception {
+        Network network = createNetwork("123", "4", "gb");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void badMncIsRejected_tooLong() throws Exception {
-        TelephonyLookupProtoFile.Network network = createNetwork("123", "4567", "gb");
-        checkGenerationFails(createTelephonyLookup(network));
+    public void networks_badMncIsRejected_tooLong() throws Exception {
+        Network network = createNetwork("123", "4567", "gb");
+        checkGenerationFails(createTelephonyLookup(List.of(network), List.of()));
     }
 
     @Test
-    public void duplicateMccMncComboIsRejected() throws Exception {
-        TelephonyLookupProtoFile.Network network1 = createNetwork("123", "456", "gb");
-        TelephonyLookupProtoFile.Network network2 = createNetwork("123", "456", "us");
-        checkGenerationFails(createTelephonyLookup(network1, network2));
+    public void networks_duplicateMccMncComboIsRejected() throws Exception {
+        Network network1 = createNetwork("123", "456", "gb");
+        Network network2 = createNetwork("123", "456", "us");
+        checkGenerationFails(createTelephonyLookup(List.of(network1, network2), List.of()));
+    }
+
+    @Test
+    public void mobileCountries_upperCaseCountryIsoCodeIsRejected() throws Exception {
+        MobileCountry mobileCountry = createMobileCountry("123", List.of("GB"));
+        checkGenerationFails(createTelephonyLookup(List.of(), List.of(mobileCountry)));
+    }
+
+    @Test
+    public void mobileCountries_unknownCountryIsoCodeIsRejected() throws Exception {
+        MobileCountry mobileCountry = createMobileCountry("123", List.of("gb", "zx"));
+        checkGenerationFails(createTelephonyLookup(List.of(), List.of(mobileCountry)));
+    }
+
+    @Test
+    public void mobileCountries_badMccIsRejected_nonNumeric() throws Exception {
+        MobileCountry mobileCountry = createMobileCountry("XXX", List.of("gb"));
+        checkGenerationFails(createTelephonyLookup(List.of(), List.of(mobileCountry)));
+    }
+
+    @Test
+    public void mobileCountries_badMccIsRejected_tooShort() throws Exception {
+        MobileCountry mobileCountry = createMobileCountry("12", List.of("gb"));
+        checkGenerationFails(createTelephonyLookup(List.of(), List.of(mobileCountry)));
+    }
+
+    @Test
+    public void mobileCountries_badMccIsRejected_tooLong() throws Exception {
+        MobileCountry mobileCountry = createMobileCountry("1234", List.of("gb"));
+        checkGenerationFails(createTelephonyLookup(List.of(), List.of(mobileCountry)));
+    }
+
+    @Test
+    public void mobileCountries_duplicateMccComboIsRejected() throws Exception {
+        MobileCountry mobileCountry1 = createMobileCountry("123", List.of("gb"));
+        MobileCountry mobileCountry2 = createMobileCountry("123", List.of("gb"));
+        checkGenerationFails(
+                createTelephonyLookup(List.of(), List.of(mobileCountry1, mobileCountry2)));
     }
 
     @Test
     public void validDataCreatesFile() throws Exception {
-        TelephonyLookupProtoFile.Network network1 = createNetwork("123", "456", "gb");
-        TelephonyLookupProtoFile.Network network2 = createNetwork("123", "56", "us");
-        TelephonyLookupProtoFile.TelephonyLookup telephonyLookupProto =
-                createTelephonyLookup(network1, network2);
+        Network network1 = createNetwork("123", "456", "gb");
+        Network network2 = createNetwork("123", "56", "us");
+        MobileCountry mobileCountry1 = createMobileCountry("123", List.of("gb"));
+        MobileCountry mobileCountry2 = createMobileCountry("456", List.of("us", "fr"));
+        TelephonyLookup telephonyLookupProto =
+                createTelephonyLookup(List.of(network1, network2),
+                        List.of(mobileCountry1, mobileCountry2));
 
         String telephonyLookupXml = generateTelephonyLookupXml(telephonyLookupProto);
-        assertContains(telephonyLookupXml,
-                "<network mcc=\"123\" mnc=\"456\" country=\"gb\"/>",
-                "<network mcc=\"123\" mnc=\"56\" country=\"us\"/>"
-        );
-
+    assertContains(
+        trimAndLinearize(telephonyLookupXml),
+        "<network mcc=\"123\" mnc=\"456\" country=\"gb\"/>",
+        "<network mcc=\"123\" mnc=\"56\" country=\"us\"/>",
+        "<mobile_country mcc=\"123\"><country>gb</country></mobile_country>",
+        "<mobile_country mcc=\"456\""
+            + " default=\"us\"><country>us</country><country>fr</country></mobile_country>");
     }
 
-
-    private void checkGenerationFails(TelephonyLookupProtoFile.TelephonyLookup telephonyLookup2)
+    private void checkGenerationFails(TelephonyLookup telephonyLookup)
             throws Exception {
-        TelephonyLookupProtoFile.TelephonyLookup telephonyLookup =
-                telephonyLookup2;
         String telephonyLookupFile = createTelephonyLookupFile(telephonyLookup);
         String outputFile = Files.createTempFile(tempDir, "out", null /* suffix */).toString();
 
@@ -148,13 +195,12 @@ public class TelephonyLookupGeneratorTest {
     }
 
     private String createTelephonyLookupFile(
-            TelephonyLookupProtoFile.TelephonyLookup telephonyLookup) throws Exception {
+            TelephonyLookup telephonyLookup) throws Exception {
         return TestUtils.createFile(tempDir, TextFormat.printToString(telephonyLookup));
     }
 
     private String generateTelephonyLookupXml(
-            TelephonyLookupProtoFile.TelephonyLookup telephonyLookup) throws Exception {
-
+            TelephonyLookup telephonyLookup) throws Exception {
         String telephonyLookupFile = createTelephonyLookupFile(telephonyLookup);
 
         String outputFile = Files.createTempFile(tempDir, "out", null /* suffix */).toString();
@@ -173,27 +219,37 @@ public class TelephonyLookupGeneratorTest {
         return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
     }
 
-    private static TelephonyLookupProtoFile.Network createNetwork(String mcc, String mnc,
+    private static Network createNetwork(String mcc, String mnc,
             String isoCountryCode) {
-        return TelephonyLookupProtoFile.Network.newBuilder()
+        return Network.newBuilder()
                 .setMcc(mcc)
                 .setMnc(mnc)
                 .setCountryIsoCode(isoCountryCode)
                 .build();
     }
 
-    private static TelephonyLookupProtoFile.TelephonyLookup createTelephonyLookup(
-            TelephonyLookupProtoFile.Network... networks) {
-        TelephonyLookupProtoFile.TelephonyLookup.Builder builder =
-                TelephonyLookupProtoFile.TelephonyLookup.newBuilder();
-        for (TelephonyLookupProtoFile.Network network : networks) {
-            builder.addNetworks(network);
-        }
-        return builder.build();
+    private static MobileCountry createMobileCountry(
+            String mcc, List<String> countryIsoCodes) {
+        return MobileCountry.newBuilder()
+                .setMcc(mcc)
+                .addAllCountryIsoCodes(countryIsoCodes)
+                .build();
+    }
+
+    private static TelephonyLookup createTelephonyLookup(
+            List<Network> networks, List<MobileCountry> mobileCountries) {
+        return TelephonyLookup.newBuilder()
+                .addAllNetworks(networks)
+                .addAllMobileCountries(mobileCountries)
+                .build();
     }
 
     private static void assertFileIsEmpty(String outputFile) throws IOException {
         Path outputFilePath = Paths.get(outputFile);
         assertEquals(0, Files.size(outputFilePath));
+    }
+
+    private static String trimAndLinearize(String input) {
+        return input.lines().map(String::trim).collect(Collectors.joining());
     }
 }
