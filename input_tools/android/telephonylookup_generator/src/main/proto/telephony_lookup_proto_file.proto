@@ -22,7 +22,10 @@ option java_multiple_files = false;
 package com.android.libcore.timezone.telephonylookup.proto;
 
 message TelephonyLookup {
+    /* MCC/MNC override for a specific region */
     repeated Network networks = 1;
+    /* Countries of a given MCC */
+    repeated MobileCountry mobile_countries = 2;
 }
 
 message Network {
@@ -30,6 +33,13 @@ message Network {
     required string mcc = 1;
     /* A 2- or 3-digit numeric in ASCII. */
     required string mnc = 2;
-    /* An ISO 3166 alpha-2 code (lower case).  */
+    /* An ISO 3166 alpha-2 code (lower case). */
     required string countryIsoCode = 3;
+}
+
+message MobileCountry {
+    /* A 3-digit numeric in ASCII. */
+    required string mcc = 1;
+    /* ISO 3166 alpha-2 codes (lower case). */
+    repeated string countryIsoCodes = 2;
 }
