@@ -80,12 +80,17 @@ public final class TelephonyLookupGenerator {
             }
 
             List<TelephonyLookupProtoFile.Network> networksIn = telephonyLookupIn.getNetworksList();
+            List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn =
+                telephonyLookupIn.getMobileCountriesList();
 
             validateNetworks(networksIn, errors);
             errors.throwIfError("One or more validation errors encountered");
 
+            validateMobileCountries(mobileCountriesIn, errors);
+            errors.throwIfError("One or more validation errors encountered");
+
             TelephonyLookupXmlFile.TelephonyLookup telephonyLookupOut =
-                    createOutputTelephonyLookup(networksIn);
+                    createOutputTelephonyLookup(networksIn, mobileCountriesIn);
             logInfo("Writing " + outputFile);
             try {
                 TelephonyLookupXmlFile.write(telephonyLookupOut, outputFile);
@@ -141,6 +146,48 @@ public final class TelephonyLookupGenerator {
         }
     }
 
+    private static void validateMobileCountries(
+            List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn,
+            Errors errors) {
+        errors.pushScope("validateMobileCountries");
+        try {
+            Set<String> knownIsoCountries = getLowerCaseCountryIsoCodes();
+            Set<String> mccSet = new HashSet<>();
+
+            if (mobileCountriesIn.isEmpty()) {
+                errors.addError("No mobile countries found");
+            }
+
+            for (TelephonyLookupProtoFile.MobileCountry mobileCountryIn : mobileCountriesIn) {
+                String mcc = mobileCountryIn.getMcc();
+                if (mcc.length() != 3 || !isAsciiNumeric(mcc)) {
+                    errors.addError("mcc=" + mcc + " must have 3 decimal digits");
+                }
+
+                if (!mccSet.add(mcc)) {
+                    errors.addError("Duplicate entry for mcc=" + mcc);
+                }
+
+                if (mobileCountryIn.getCountryIsoCodesList().isEmpty()) {
+                    errors.addError("Missing countries for mcc=" + mcc);
+                }
+
+                for (String countryIsoCode : mobileCountryIn.getCountryIsoCodesList()) {
+                    String countryIsoCodeLower = countryIsoCode.toLowerCase(Locale.ROOT);
+                    if (!countryIsoCodeLower.equals(countryIsoCode)) {
+                        errors.addError("Country code not lower case: " + countryIsoCode);
+                    }
+
+                    if (!knownIsoCountries.contains(countryIsoCodeLower)) {
+                        errors.addError("Country code not known: " + countryIsoCode);
+                    }
+                }
+            }
+        } finally {
+            errors.popScope();
+        }
+    }
+
     private static boolean isAsciiNumeric(String string) {
         for (int i = 0; i < string.length(); i++) {
             char character = string.charAt(i);
@@ -161,7 +208,9 @@ public final class TelephonyLookupGenerator {
     }
 
     private static TelephonyLookupXmlFile.TelephonyLookup createOutputTelephonyLookup(
-            List<TelephonyLookupProtoFile.Network> networksIn) {
+            List<TelephonyLookupProtoFile.Network> networksIn,
+            List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn) {
+        // Networks
         List<TelephonyLookupXmlFile.Network> networksOut = new ArrayList<>();
         for (TelephonyLookupProtoFile.Network networkIn : networksIn) {
             String mcc = networkIn.getMcc();
@@ -171,7 +220,17 @@ public final class TelephonyLookupGenerator {
                     new TelephonyLookupXmlFile.Network(mcc, mnc, countryIsoCode);
             networksOut.add(networkOut);
         }
-        return new TelephonyLookupXmlFile.TelephonyLookup(networksOut);
+
+        // Mobile Countries
+        List<TelephonyLookupXmlFile.MobileCountry> mobileCountriesOut = new ArrayList<>();
+        for (TelephonyLookupProtoFile.MobileCountry mobileCountryIn : mobileCountriesIn) {
+            TelephonyLookupXmlFile.MobileCountry mobileCountryOut =
+                    new TelephonyLookupXmlFile.MobileCountry(
+                            mobileCountryIn.getMcc(), mobileCountryIn.getCountryIsoCodesList());
+            mobileCountriesOut.add(mobileCountryOut);
+        }
+
+        return new TelephonyLookupXmlFile.TelephonyLookup(networksOut, mobileCountriesOut);
     }
 
     private static void logError(String msg) {
