@@ -61,7 +61,7 @@ prebuilt_etc {
 
 prebuilt_etc {
     name: "apex_tz_version_ver8",
-    src: "version/tz_version",
+    src: "versioned/8/version/tz_version",
     filename: "tz_version",
     sub_dir: "tz/versioned/8",
     installable: false,
@@ -102,6 +102,52 @@ prebuilt_etc {
     ],
     licenses: ["system_timezone_output_data_icu_licence"],
     sub_dir: "tz/versioned/8/icu",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_tz_version_ver9",
+    src: "version/tz_version",
+    filename: "tz_version",
+    sub_dir: "tz/versioned/9",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_tzdata_ver9",
+    src: "iana/tzdata",
+    licenses: ["system_timezone_output_data_iana_licence"],
+    filename: "tzdata",
+    sub_dir: "tz/versioned/9",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_tzlookup.xml_ver9",
+    src: "android/tzlookup.xml",
+    filename: "tzlookup.xml",
+    sub_dir: "tz/versioned/9",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_telephonylookup.xml_ver9",
+    src: "android/telephonylookup.xml",
+    filename: "telephonylookup.xml",
+    sub_dir: "tz/versioned/9",
+    installable: false,
+}
+
+prebuilt_etc {
+    name: "apex_icu_res_files_ver9",
+    srcs: [
+        "icu_overlay/zoneinfo64.res",
+        "icu_overlay/metaZones.res",
+        "icu_overlay/timezoneTypes.res",
+        "icu_overlay/windowsZones.res",
+    ],
+    licenses: ["system_timezone_output_data_icu_licence"],
+    sub_dir: "tz/versioned/9/icu",
     installable: false,
 }
 

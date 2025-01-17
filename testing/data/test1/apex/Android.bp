@@ -35,6 +35,11 @@ apex {
         "apex_telephonylookup.xml_ver8_test1",
         "apex_tzdata_ver8_test1",
         "apex_icu_res_files_ver8_test1",
+        "apex_tz_version_ver9_test1",
+        "apex_tzlookup.xml_ver9_test1",
+        "apex_telephonylookup.xml_ver9_test1",
+        "apex_tzdata_ver9_test1",
+        "apex_icu_res_files_ver9_test1",
     ],
 
     // installable: false as we do not want test APEX versions in the system
