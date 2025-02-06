@@ -23,6 +23,8 @@
         <option name="test-file-name" value="MtsTimeZoneDataTestCases.apk" />
     </target_preparer>
     <test class="com.android.tradefed.testtype.AndroidJUnitTest" >
+        <!-- To get current major version. -->
+        <option name="hidden-api-checks" value="false"/>
         <option name="package" value="android.tzdata.mts" />
         <option name="runtime-hint" value="1m" />
     </test>

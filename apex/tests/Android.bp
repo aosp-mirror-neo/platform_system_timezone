@@ -29,7 +29,10 @@ android_test {
     srcs: ["src/**/*.java"],
 
     sdk_version: "current",
-    libs: ["android.test.base.stubs"],
+    libs: [
+        "android.test.base.stubs",
+        "legacy.i18n.module.platform.api.stubs",
+    ],
 
     // Tag this module as an mts test artifact
     test_suites: [
