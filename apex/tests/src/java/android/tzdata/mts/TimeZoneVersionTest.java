@@ -80,20 +80,21 @@ public class TimeZoneVersionTest {
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             assertEquals("007", majorVersion);
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            assertEquals("008", majorVersion);
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.BAKLAVA) {
             // The "main" branch is also the staging area for the next Android release that won't
             // have an Android release constant yet. Instead, we have to infer what the expected tz
             // data set version should be when the SDK_INT identifies it as the latest Android release
             // in case it is actually the "main" branch. Below we assume that an increment to ICU is
             // involved with each release of Android and requires an tz data set version increment.
-            // TODO(b/319103072) A future tzdata module will be installed to a range of Android
-            // releases. This test might beed to be reworked because the ICU version may no longer
-            // imply the tz data set to expect.
-            if (VersionInfo.ICU_VERSION.getMajor() > 75) {
-                // ICU version in V is 75. When we update it in a next release major version
-                // should be updated too.
-                assertEquals("009", majorVersion);
+
+
+            // ICU version in B is 76. When we update it in a next release major version
+            // should be updated too.
+            if (VersionInfo.ICU_VERSION.getMajor() > 76) {
+                assertEquals("010", majorVersion);
             } else {
-                assertEquals("008", majorVersion);
+                assertEquals("009", majorVersion);
             }
         } else {
             // If this fails, a new API level has likely been finalized and can be made
