@@ -3,5 +3,10 @@
     {
       "path": "system/apex/tests"
     }
+  ],
+  "presubmit": [
+    {
+      "name": "MtsTimeZoneDataTestCases"
+    }
   ]
 }
