@@ -179,6 +179,8 @@ Changing the Time Zone Data Set Version
       * CURRENT_FORMAT_MAJOR_VERSION and CURRENT_FORMAT_MINOR_VERSION fields.
     * external/icu/android_icu4j/src/main/java/android/icu/platform/AndroidDataFiles.java
       * CURRENT_MAJOR_VERSION field.
+    * external/icu/libandroidicuinit/IcuRegistration.cpp
+      * CURRENT_MAJOR_FORMAT_VERSION field.
     * Version mapping table above.
     * system/timezone/output_data/icu_overlay/Android.bp and system/timezone/output_data/android/Android.bp.
       * Update `relative_install_path` in `prebuilt_root_host` targets.
