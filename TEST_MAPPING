@@ -8,5 +8,25 @@
     {
       "name": "MtsTimeZoneDataTestCases"
     }
+  ],
+  "postsubmit": [
+    {
+      "name": "CtsBionicTestCases"
+    },
+    {
+      "name": "CtsIcu4cTestCases"
+    },
+    {
+      "name": "CtsIcuTestCases"
+    },
+    {
+      "name": "CtsLibcoreOjTestCases"
+    },
+    {
+      "name": "CtsLibcoreTestCases"
+    },
+    {
+      "name": "CtsTextTestCases"
+    }
   ]
 }
