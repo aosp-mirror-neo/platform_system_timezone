@@ -53,5 +53,5 @@ prebuilt_root_host {
         "windowsZones.res",
         "zoneinfo64.res",
     ],
-    relative_install_path: "com.android.tzdata/etc/tz/versioned/8/icu",
+    relative_install_path: "com.android.tzdata/etc/tz/versioned/9/icu",
 }
