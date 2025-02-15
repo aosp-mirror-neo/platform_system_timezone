@@ -22,5 +22,5 @@ prebuilt_root_host {
         "tzlookup.xml",
         "telephonylookup.xml",
     ],
-    relative_install_path: "com.android.tzdata/etc/tz/versioned/8",
+    relative_install_path: "com.android.tzdata/etc/tz/versioned/9",
 }
