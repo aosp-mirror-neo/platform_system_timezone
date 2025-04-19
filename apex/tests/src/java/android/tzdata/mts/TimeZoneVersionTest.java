@@ -159,7 +159,7 @@ public class TimeZoneVersionTest {
                 .collect(toMap(File::toString, TimeZoneVersionTest::readTzDbVersionFrom));
 
         String msg = "Versions are not consistent: " + ianaVersionInVersionFile;
-        assertEquals(msg, 1, Set.of(ianaVersionInVersionFile.values()).size());
+        assertEquals(msg, 1, Set.copyOf(ianaVersionInVersionFile.values()).size());
     }
 
     private static int getCurrentFormatMajorVersion() {
