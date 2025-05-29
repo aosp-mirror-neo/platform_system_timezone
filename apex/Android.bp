@@ -77,4 +77,8 @@ apex {
         "apex_tzdata_ver9",
         "apex_icu_res_files_ver9",
     ],
+    licenses: [
+        "Android-Apache-2.0",
+        "opensourcerequest",
+    ],
 }
