@@ -100,6 +100,13 @@ networks:<
   countryIsoCode: "im"
 >
 
+networks:<
+  # Liberty PR  http://b/370372605
+  mcc: "313"
+  mnc: "790"
+  countryIsoCode: "pr"
+>
+
 # Countries / regions by Mobile Country Code (MCC).
 #
 # The table below is built from three main resources:
