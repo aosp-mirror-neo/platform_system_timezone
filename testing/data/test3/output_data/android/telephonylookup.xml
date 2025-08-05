@@ -12,6 +12,7 @@
   <network mcc="234" mnc="03" country="je"/>
   <network mcc="234" mnc="58" country="im"/>
   <network mcc="234" mnc="36" country="im"/>
+  <network mcc="313" mnc="790" country="pr"/>
  </networks>
  <mobile_countries>
   <mobile_country mcc="202">
