@@ -196,7 +196,7 @@ public class TelephonyLookupGeneratorTest {
 
     private String createTelephonyLookupFile(
             TelephonyLookup telephonyLookup) throws Exception {
-        return TestUtils.createFile(tempDir, TextFormat.printToString(telephonyLookup));
+        return TestUtils.createFile(tempDir, telephonyLookup.toString());
     }
 
     private String generateTelephonyLookupXml(

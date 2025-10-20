@@ -999,7 +999,7 @@ public class TzLookupGeneratorTest {
     }
 
     private String createCountryZonesFile(CountryZonesFile.CountryZones countryZones) throws Exception {
-        return TestUtils.createFile(tempDir, TextFormat.printToString(countryZones));
+        return TestUtils.createFile(tempDir, countryZones.toString());
     }
 
     private static CountryZonesFile.CountryZones createValidCountryZones(
