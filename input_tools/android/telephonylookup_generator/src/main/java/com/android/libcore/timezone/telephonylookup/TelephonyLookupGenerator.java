@@ -16,6 +16,7 @@
 package com.android.libcore.timezone.telephonylookup;
 
 import static com.android.libcore.timezone.telephonylookup.TelephonyLookupProtoFileSupport.parseTelephonyLookupTextFile;
+import static com.android.libcore.timezone.telephonylookup.TelephonyLookupXmlFile.MobileCountryOverride;
 
 import com.android.libcore.timezone.telephonylookup.proto.TelephonyLookupProtoFile;
 import com.android.libcore.timezone.util.Errors;
@@ -38,7 +39,7 @@ import javax.xml.stream.XMLStreamException;
 /**
  * Generates the telephonylookup.xml file using the information from telephonylookup.txt.
  *
- * See {@link #main(String[])} for commandline information.
+ * <p>See {@link #main(String[])} for commandline information.
  */
 public final class TelephonyLookupGenerator {
 
@@ -48,14 +49,13 @@ public final class TelephonyLookupGenerator {
     /**
      * Executes the generator.
      *
-     * Positional arguments:
-     * 1: The telephonylookup.txt proto file
-     * 2: the file to generate
+     * <p>Positional arguments: 1: The telephonylookup.txt proto file 2: the file to generate
      */
     public static void main(String[] args) throws Exception {
         if (args.length != 2) {
             System.err.println(
-                    "usage: java " + TelephonyLookupGenerator.class.getName()
+                    "usage: java "
+                            + TelephonyLookupGenerator.class.getName()
                             + " <input proto file> <output xml file>");
             System.exit(0);
         }
@@ -79,15 +79,22 @@ public final class TelephonyLookupGenerator {
                 throw errors.addFatalAndHalt("Unable to parse " + telephonyLookupProtoFile, e);
             }
 
-            List<TelephonyLookupProtoFile.Network> networksIn = telephonyLookupIn.getNetworksList();
             List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn =
-                telephonyLookupIn.getMobileCountriesList();
-
-            validateNetworks(networksIn, errors);
-            errors.throwIfError("One or more validation errors encountered");
+                    telephonyLookupIn.getMobileCountriesList();
 
             validateMobileCountries(mobileCountriesIn, errors);
             errors.throwIfError("One or more validation errors encountered");
+
+            List<TelephonyLookupProtoFile.Network> networksIn = extractNetworks(mobileCountriesIn);
+
+            List<TelephonyLookupProtoFile.Network> networksInDeprecated =
+                    telephonyLookupIn.getNetworksList();
+
+            validateNetworks(networksInDeprecated, errors);
+            errors.throwIfError("One or more validation errors encountered");
+
+            compareNetworkLists(networksIn, networksInDeprecated, errors);
+            errors.throwIfError("Network list comparison failed");
 
             TelephonyLookupXmlFile.TelephonyLookup telephonyLookupOut =
                     createOutputTelephonyLookup(networksIn, mobileCountriesIn);
@@ -109,8 +116,54 @@ public final class TelephonyLookupGenerator {
         return !errors.hasError();
     }
 
-    private static void validateNetworks(List<TelephonyLookupProtoFile.Network> networksIn,
+    private static void compareNetworkLists(
+            List<TelephonyLookupProtoFile.Network> derivedNetworks,
+            List<TelephonyLookupProtoFile.Network> deprecatedNetworks,
             Errors errors) {
+        errors.pushScope("compareNetworkLists");
+        try {
+            Set<TelephonyLookupProtoFile.Network> derivedSet = new HashSet<>(derivedNetworks);
+            Set<TelephonyLookupProtoFile.Network> deprecatedSet = new HashSet<>(deprecatedNetworks);
+
+            if (!derivedSet.equals(deprecatedSet)) {
+                errors.addError(
+                        "Mismatch between networks derived from mobile_country overrides and the"
+                                + " deprecated 'networks' field.");
+
+                Set<TelephonyLookupProtoFile.Network> inDerivedOnly = new HashSet<>(derivedSet);
+                inDerivedOnly.removeAll(deprecatedSet);
+                if (!inDerivedOnly.isEmpty()) {
+                    errors.addError(
+                            "Networks present in overrides but NOT in deprecated 'networks' field: "
+                                    + inDerivedOnly.stream()
+                                            .map(TelephonyLookupGenerator::formatNetwork)
+                                            .collect(Collectors.joining(", ")));
+                }
+
+                Set<TelephonyLookupProtoFile.Network> inDeprecatedOnly =
+                        new HashSet<>(deprecatedSet);
+                inDeprecatedOnly.removeAll(derivedSet);
+                if (!inDeprecatedOnly.isEmpty()) {
+                    errors.addError(
+                            "Networks present in deprecated 'networks' field but NOT in overrides: "
+                                    + inDeprecatedOnly.stream()
+                                            .map(TelephonyLookupGenerator::formatNetwork)
+                                            .collect(Collectors.joining(", ")));
+                }
+            }
+        } finally {
+            errors.popScope();
+        }
+    }
+
+    private static String formatNetwork(TelephonyLookupProtoFile.Network network) {
+        return String.format(
+                "{mcc=%s, mnc=%s, country=%s}",
+                network.getMcc(), network.getMnc(), network.getCountryIsoCode());
+    }
+
+    private static void validateNetworks(
+            List<TelephonyLookupProtoFile.Network> networksIn, Errors errors) {
         errors.pushScope("validateNetworks");
         try {
             Set<String> knownIsoCountries = getLowerCaseCountryIsoCodes();
@@ -147,8 +200,7 @@ public final class TelephonyLookupGenerator {
     }
 
     private static void validateMobileCountries(
-            List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn,
-            Errors errors) {
+            List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn, Errors errors) {
         errors.pushScope("validateMobileCountries");
         try {
             Set<String> knownIsoCountries = getLowerCaseCountryIsoCodes();
@@ -182,6 +234,86 @@ public final class TelephonyLookupGenerator {
                         errors.addError("Country code not known: " + countryIsoCode);
                     }
                 }
+
+                List<TelephonyLookupProtoFile.Override> overrides =
+                        mobileCountryIn.getOverridesList();
+                validateOverrides(
+                        overrides,
+                        mcc,
+                        knownIsoCountries,
+                        mobileCountryIn.getCountryIsoCodesList(),
+                        errors);
+            }
+        } finally {
+            errors.popScope();
+        }
+    }
+
+    private static void validateOverrides(
+            List<TelephonyLookupProtoFile.Override> overrides,
+            String mcc,
+            Set<String> knownIsoCountries,
+            List<String> mobileCountryIsoCodes,
+            Errors errors) {
+        errors.pushScope("validateOverrides");
+        try {
+            Set<String> overrideMncSet = new HashSet<>();
+            for (var override : overrides) {
+                if (!override.hasMnc()) {
+                    errors.addError("Override for mcc=" + mcc + " is missing mnc");
+                } else {
+                    String mnc = override.getMnc();
+                    if (mnc.length() < 2 || mnc.length() > 3 || !isAsciiNumeric(mnc)) {
+                        errors.addError(
+                                "Override for mcc="
+                                        + mcc
+                                        + " has mnc="
+                                        + mnc
+                                        + ": mnc must have 2 or 3 decimal digits");
+                    }
+                    if (!overrideMncSet.add(mnc)) {
+                        errors.addError("Override for mcc=" + mcc + " has duplicate mnc=" + mnc);
+                    }
+                    if (override.getCountryIsoCodesList().isEmpty()) {
+                        errors.addError(
+                                "Override for mcc="
+                                        + mcc
+                                        + " with mnc="
+                                        + mnc
+                                        + " missing countryIsoCodes");
+                    } else {
+                        Set<String> countryIsoCodes = new HashSet<>();
+                        for (String countryIsoCode : override.getCountryIsoCodesList()) {
+                            String countryIsoCodeLower = countryIsoCode.toLowerCase(Locale.ROOT);
+                            if (!countryIsoCodeLower.equals(countryIsoCode)) {
+                                errors.addError("Country code not lower case: " + countryIsoCode);
+                            }
+
+                            if (!knownIsoCountries.contains(countryIsoCodeLower)) {
+                                errors.addError("Country code not known: " + countryIsoCode);
+                            }
+
+                            if (!countryIsoCodes.add(countryIsoCodeLower)) {
+                                errors.addError(
+                                        "Country code "
+                                                + countryIsoCodeLower
+                                                + " is already defined in the override for mcc="
+                                                + mcc
+                                                + " with mnc="
+                                                + mnc);
+                            }
+                        }
+                        if (countryIsoCodes.equals(new HashSet<>(mobileCountryIsoCodes))) {
+                            errors.addError(
+                                    "Override for mcc="
+                                            + mcc
+                                            + " with mnc="
+                                            + mnc
+                                            + " contains all the same countryIsoCodes as the mobile"
+                                            + " country");
+                        }
+                    }
+                }
             }
         } finally {
             errors.popScope();
@@ -201,9 +333,10 @@ public final class TelephonyLookupGenerator {
     private static Set<String> getLowerCaseCountryIsoCodes() {
         // Use ICU4J's knowledge of ISO codes because we keep that up to date.
         List<String> knownIsoCountryCodes = Arrays.asList(ULocale.getISOCountries());
-        knownIsoCountryCodes = knownIsoCountryCodes.stream()
-                .map(x -> x.toLowerCase(Locale.ROOT))
-                .collect(Collectors.toList());
+        knownIsoCountryCodes =
+                knownIsoCountryCodes.stream()
+                        .map(x -> x.toLowerCase(Locale.ROOT))
+                        .collect(Collectors.toList());
         return new HashSet<>(knownIsoCountryCodes);
     }
 
@@ -224,13 +357,59 @@ public final class TelephonyLookupGenerator {
         // Mobile Countries
         List<TelephonyLookupXmlFile.MobileCountry> mobileCountriesOut = new ArrayList<>();
         for (TelephonyLookupProtoFile.MobileCountry mobileCountryIn : mobileCountriesIn) {
+            List<MobileCountryOverride> overrideListOut = new ArrayList<>();
+            for (TelephonyLookupProtoFile.Override override : mobileCountryIn.getOverridesList()) {
+                overrideListOut.add(
+                        new MobileCountryOverride(
+                                override.getMnc(), override.getCountryIsoCodesList()));
+            }
             TelephonyLookupXmlFile.MobileCountry mobileCountryOut =
                     new TelephonyLookupXmlFile.MobileCountry(
-                            mobileCountryIn.getMcc(), mobileCountryIn.getCountryIsoCodesList());
+                            mobileCountryIn.getMcc(),
+                            mobileCountryIn.getCountryIsoCodesList(),
+                            overrideListOut);
             mobileCountriesOut.add(mobileCountryOut);
         }
 
         return new TelephonyLookupXmlFile.TelephonyLookup(networksOut, mobileCountriesOut);
+    }
+
+    /**
+     * Recreates a list of Network protos from the MobileCountry protos, specifically using the
+     * override information, for backwards compatibility.
+     *
+     * @param mobileCountriesIn List of MobileCountry messages.
+     * @return List of Network messages.
+     */
+    private static List<TelephonyLookupProtoFile.Network> extractNetworks(
+            List<TelephonyLookupProtoFile.MobileCountry> mobileCountriesIn) {
+
+        List<TelephonyLookupProtoFile.Network> networks = new ArrayList<>();
+
+        for (TelephonyLookupProtoFile.MobileCountry mobileCountry : mobileCountriesIn) {
+            String mcc = mobileCountry.getMcc();
+
+            for (TelephonyLookupProtoFile.Override override : mobileCountry.getOverridesList()) {
+                String mnc = override.getMnc();
+
+                // The original Network proto structure had a single string field for
+                // countryIsoCode.
+                // To maintain compatibility and the original constraint of one entry per MCC+MNC,
+                // we use the *first* country code from the override's countryIsoCodes list.
+                // Based on the provided examples, each override appears to have only one country
+                // code.
+                String primaryIsoCode = override.getCountryIsoCodesList().getFirst();
+
+                TelephonyLookupProtoFile.Network network =
+                        TelephonyLookupProtoFile.Network.newBuilder()
+                                .setMcc(mcc)
+                                .setMnc(mnc)
+                                .setCountryIsoCode(primaryIsoCode)
+                                .build();
+                networks.add(network);
+            }
+        }
+        return networks;
     }
 
     private static void logError(String msg) {

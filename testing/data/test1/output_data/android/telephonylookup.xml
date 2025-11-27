@@ -4,16 +4,16 @@
 
 --><telephony_lookup>
  <networks>
+  <network mcc="234" mnc="03" country="je"/>
+  <network mcc="234" mnc="36" country="im"/>
+  <network mcc="234" mnc="50" country="je"/>
+  <network mcc="234" mnc="55" country="je"/>
+  <network mcc="234" mnc="58" country="im"/>
   <network mcc="310" mnc="110" country="gu"/>
   <network mcc="310" mnc="140" country="gu"/>
   <network mcc="310" mnc="370" country="gu"/>
   <network mcc="310" mnc="470" country="gu"/>
   <network mcc="311" mnc="780" country="as"/>
-  <network mcc="234" mnc="55" country="je"/>
-  <network mcc="234" mnc="50" country="je"/>
-  <network mcc="234" mnc="03" country="je"/>
-  <network mcc="234" mnc="58" country="im"/>
-  <network mcc="234" mnc="36" country="im"/>
   <network mcc="313" mnc="790" country="pr"/>
  </networks>
  <mobile_countries>
@@ -76,6 +76,21 @@
   </mobile_country>
   <mobile_country mcc="234">
    <country>gb</country>
+   <override mnc="03">
+    <country>je</country>
+   </override>
+   <override mnc="36">
+    <country>im</country>
+   </override>
+   <override mnc="50">
+    <country>je</country>
+   </override>
+   <override mnc="55">
+    <country>je</country>
+   </override>
+   <override mnc="58">
+    <country>im</country>
+   </override>
   </mobile_country>
   <mobile_country mcc="235">
    <country>gb</country>
@@ -187,15 +202,33 @@
   </mobile_country>
   <mobile_country mcc="310">
    <country>us</country>
+   <override mnc="110">
+    <country>gu</country>
+   </override>
+   <override mnc="140">
+    <country>gu</country>
+   </override>
+   <override mnc="370">
+    <country>gu</country>
+   </override>
+   <override mnc="470">
+    <country>gu</country>
+   </override>
   </mobile_country>
   <mobile_country mcc="311">
    <country>us</country>
+   <override mnc="780">
+    <country>as</country>
+   </override>
   </mobile_country>
   <mobile_country mcc="312">
    <country>us</country>
   </mobile_country>
   <mobile_country mcc="313">
    <country>us</country>
+   <override mnc="790">
+    <country>pr</country>
+   </override>
   </mobile_country>
   <mobile_country mcc="314">
    <country>us</country>
