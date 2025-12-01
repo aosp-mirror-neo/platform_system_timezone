@@ -35,9 +35,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-/**
- * A class that knows about the structure of the telephonylookup.xml file.
- */
+/** A class that knows about the structure of the telephonylookup.xml file. */
 final class TelephonyLookupXmlFile {
 
     // <telephony_lookup>
@@ -49,7 +47,6 @@ final class TelephonyLookupXmlFile {
     // <network mcc="123" mnc="456" country="gu">
     private static final String NETWORK_ELEMENT = "network";
     private static final String MOBILE_COUNTRY_CODE_ATTRIBUTE = "mcc";
-    private static final String MOBILE_NETWORK_CODE_ATTRIBUTE = "mnc";
     private static final String COUNTRY_ISO_CODE_ATTRIBUTE = "country";
 
     // <mobile_countries>
@@ -58,6 +55,9 @@ final class TelephonyLookupXmlFile {
     // <mobile_country mcc="123" [default="gu"]>
     private static final String MOBILE_COUNTRY_ELEMENT = "mobile_country";
     private static final String DEFAULT_ATTRIBUTE = "default";
+    private static final String OVERRIDE_ELEMENT = "override";
+    private static final String MOBILE_NETWORK_CODE_ATTRIBUTE = "mnc";
+    private static final String COUNTRY_ISO_CODE_ELEMENT = "country";
 
     static void write(TelephonyLookup telephonyLookup, String outputFile)
             throws XMLStreamException, IOException {
@@ -65,13 +65,20 @@ final class TelephonyLookupXmlFile {
          * The required XML structure is:
          * <telephony_lookup>
          *   <networks>
-         *     <network mcc="123" mnc="456" country="zz"/>
-         *     <network mcc="123" mnc="789" country="zz"/>
+         *     <network mcc="310" mnc="456" country="zz"/>
+         *     <network mcc="310" mnc="789" country="zz"/>
          *   </networks>
          *
          *   <mobile_countries>
          *     <mobile_country mcc="310"/>
          *       <country>us</country>
+         *       <override mnc="456">
+         *         <country>zz</country>
+         *       </override>
+         *       <override mnc="789">
+         *         <country>zz</country>
+         *         <country>xx</country>
+         *       </override>
          *     </mobile_country>
          *     <mobile_country mcc="340" default="gp">
          *       <country>gp</country>
@@ -86,8 +93,8 @@ final class TelephonyLookupXmlFile {
         String rawXml = writer.getBuffer().toString();
 
         TransformerFactory factory = TransformerFactory.newInstance();
-        try (Writer fileWriter = new OutputStreamWriter(
-                new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
+        try (Writer fileWriter =
+                new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
 
             // Transform the XML with the identity transform but with indenting
             // so it's more human-readable.
@@ -154,8 +161,7 @@ final class TelephonyLookupXmlFile {
             this.countryIsoCode = Objects.requireNonNull(countryIsoCode);
         }
 
-        static void writeXml(Network network, XMLStreamWriter writer)
-                throws XMLStreamException {
+        static void writeXml(Network network, XMLStreamWriter writer) throws XMLStreamException {
             writer.writeStartElement(NETWORK_ELEMENT);
             writer.writeAttribute(MOBILE_COUNTRY_CODE_ATTRIBUTE, network.mcc);
             writer.writeAttribute(MOBILE_NETWORK_CODE_ATTRIBUTE, network.mnc);
@@ -168,10 +174,13 @@ final class TelephonyLookupXmlFile {
 
         private final String mcc;
         private final List<String> countryIsoCodes;
+        private final List<MobileCountryOverride> overrides;
 
-        MobileCountry(String mcc, List<String> countryIsoCodes) {
+        MobileCountry(
+                String mcc, List<String> countryIsoCodes, List<MobileCountryOverride> overrides) {
             this.mcc = Objects.requireNonNull(mcc);
             this.countryIsoCodes = Objects.requireNonNull(countryIsoCodes);
+            this.overrides = Objects.requireNonNull(overrides);
         }
 
         static void writeXml(MobileCountry mobileCountry, XMLStreamWriter writer)
@@ -184,12 +193,41 @@ final class TelephonyLookupXmlFile {
             }
 
             for (String countryIsoCode : mobileCountry.countryIsoCodes) {
-                writer.writeStartElement(COUNTRY_ISO_CODE_ATTRIBUTE);
+                writer.writeStartElement(COUNTRY_ISO_CODE_ELEMENT);
                 writer.writeCharacters(countryIsoCode);
-                writer.writeEndElement(); // COUNTRY_ISO_CODE_ATTRIBUTE
+                writer.writeEndElement(); // COUNTRY_ISO_CODE_ELEMENT
+            }
+
+            for (MobileCountryOverride override : mobileCountry.overrides) {
+                MobileCountryOverride.writeXml(override, writer);
             }
 
             writer.writeEndElement(); // MOBILE_COUNTRY_ELEMENT
+        }
+    }
+
+    static class MobileCountryOverride {
+
+        private final String mnc;
+        private final List<String> countryIsoCodes;
+
+        MobileCountryOverride(String mnc, List<String> countryIsoCodes) {
+            this.mnc = Objects.requireNonNull(mnc);
+            this.countryIsoCodes = Objects.requireNonNull(countryIsoCodes);
+        }
+
+        static void writeXml(MobileCountryOverride override, XMLStreamWriter writer)
+                throws XMLStreamException {
+            writer.writeStartElement(OVERRIDE_ELEMENT);
+            writer.writeAttribute(MOBILE_NETWORK_CODE_ATTRIBUTE, override.mnc);
+
+            for (String countryIsoCode : override.countryIsoCodes) {
+                writer.writeStartElement(COUNTRY_ISO_CODE_ELEMENT);
+                writer.writeCharacters(countryIsoCode);
+                writer.writeEndElement(); // COUNTRY_ISO_CODE_ELEMENT
+            }
+
+            writer.writeEndElement(); // OVERRIDE_ELEMENT
         }
     }
 }

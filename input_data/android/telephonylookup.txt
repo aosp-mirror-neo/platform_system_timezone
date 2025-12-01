@@ -32,7 +32,12 @@
 # The ordering of network elements is not important but is kept in ASCII
 # order by MCC and MNC, then country ISO code for easier maintenance.
 # There must only be one network element per MCC+MNC combination.
-
+#
+# **DEPRECATED:** This section is only kept for backward compatibility with older
+# code. It is no longer used by the XML generator, which now relies on overrides
+# defined in the 'mobile_countries' section (see below). It is checked during
+# XML generation for consistency with those overrides.
+#
 # Network:
 #
 # mcc:
@@ -50,77 +55,77 @@ networks:<
   # That's better than not finding GMT+10:00 in US.
   mcc: "310"
   mnc: "110"
-  countryIsoCode: "gu"
+  countryIsoCode: "gu" # Guam
 >
 
 networks:<
   # Teleguam Holdings, LLC http://b/435560561
   mcc: "310"
   mnc: "140"
-  countryIsoCode: "gu"
+  countryIsoCode: "gu" # Guam
 >
 
 networks:<
   # DOCOMO PACIFIC http://b/117863016
   mcc: "310"
   mnc: "370"
-  countryIsoCode: "gu"
+  countryIsoCode: "gu" # Guam
 >
 
 networks:<
   # DOCOMO PACIFIC http://b/210384434
   mcc: "310"
   mnc: "470"
-  countryIsoCode: "gu"
+  countryIsoCode: "gu" # Guam
 >
 
 networks:<
   # American Samoa Telecommunications ASTCA  http://b/328151581
   mcc: "311"
   mnc: "780"
-  countryIsoCode: "as"
+  countryIsoCode: "as" # American Samoa
 >
 
 networks:<
   # Sure  http://b/411132517
   mcc: "234"
   mnc: "55"
-  countryIsoCode: "je"
+  countryIsoCode: "je" # Jersey
 >
 
 networks:<
   # JT  http://b/411132517
   mcc: "234"
   mnc: "50"
-  countryIsoCode: "je"
+  countryIsoCode: "je" # Jersey
 >
 
 networks:<
   # Airtel-Vodafone  http://b/411132517
   mcc: "234"
   mnc: "03"
-  countryIsoCode: "je"
+  countryIsoCode: "je" # Jersey
 >
 
 networks:<
   # Manx Telecom  http://b/411132517
   mcc: "234"
   mnc: "58"
-  countryIsoCode: "im"
+  countryIsoCode: "im" # Isle of Man
 >
 
 networks:<
   # Sure  http://b/411132517
   mcc: "234"
   mnc: "36"
-  countryIsoCode: "im"
+  countryIsoCode: "im" # Isle of Man
 >
 
 networks:<
   # Liberty PR  http://b/370372605
   mcc: "313"
   mnc: "790"
-  countryIsoCode: "pr"
+  countryIsoCode: "pr" # Puerto Rico
 >
 
 # Countries / regions by Mobile Country Code (MCC).
@@ -134,8 +139,41 @@ networks:<
 #
 # This table may not be completely accurate.
 #
-# Entries are sorted by MCC (Asc). For MCCs that cover multiple countryIsoCodes, the first
-# ISO code is considered "default" (often the one with the largest population).
+# Entries are sorted by MCC (Asc). For MCCs that cover multiple countryIsoCodes,
+# the first ISO code is considered "default" (often the one with the largest
+# population).
+#
+# Country Overrides (overrides):
+# Overrides allow a specific Mobile Network Code (MNC) under
+# a country's Mobile Country Code (MCC) to map to a different
+# country ISO code (or codes).
+#
+# * There must be only one override defined per MNC
+# * The processing order is not significant
+# * The entries are kept ordered by MNC for easier maintenance.
+#
+# MobileCountry:
+#
+# mcc:
+# The Mobile Country Code.
+#
+# countryIsoCodes:
+# One or more lower cased ISO 3166 2-character country code.
+# Must be known valid codes.
+#
+# overrides:
+# MNCs under the same MCC used in a different country.
+# Optional, multiple allowed.
+#
+#     mnc:
+#     The Mobile Network Code.
+#
+#     countryIsoCodes:
+#     One or more lower cased ISO 3166 2-character country code. Must be known
+#     valid codes. The first countryIsoCode is used for generation of networks
+#     section in xml file for backward compatibility with older code. It must be
+#     the same as the countryIsoCode for the corresponding MNC/MCC entry in
+#     networks section of the proto file.
 
 mobile_countries:<
     mcc: "202"
@@ -240,6 +278,36 @@ mobile_countries:<
     # countryIsoCodes: "gg" # Guernsey
     # countryIsoCodes: "im" # Isle of Man
     # countryIsoCodes: "je" # Jersey
+
+    overrides:<
+        # Airtel-Vodafone  http://b/411132517
+        mnc: "03"
+        countryIsoCodes: "je" # Jersey
+    >
+
+    overrides:<
+        # Sure  http://b/411132517
+        mnc: "36"
+        countryIsoCodes: "im" # Isle of Man
+    >
+
+    overrides:<
+        # JT  http://b/411132517
+        mnc: "50"
+        countryIsoCodes: "je" # Jersey
+    >
+
+    overrides<
+        # Sure  http://b/411132517
+        mnc: "55"
+        countryIsoCodes: "je" # Jersey
+    >
+
+    overrides:<
+      # Manx Telecom  http://b/411132517
+      mnc: "58"
+      countryIsoCodes: "im" # Isle of Man
+    >
 >
 
 mobile_countries:<
@@ -425,11 +493,43 @@ mobile_countries:<
 mobile_countries:<
     mcc: "310"
     countryIsoCodes: "us" # United States of America
+
+    overrides:<
+        # IT&E http://b/435560561
+        # Appears in MP too, but Pacific/Saipan is an alias to Pacific/Guam.
+        # That's better than not finding GMT+10:00 in US.
+        mnc: "110"
+        countryIsoCodes: "gu" # Guam
+    >
+
+    overrides:<
+        # Teleguam Holdings, LLC http://b/435560561
+        mnc: "140"
+        countryIsoCodes: "gu" # Guam
+    >
+
+    overrides:<
+        # DOCOMO PACIFIC http://b/117863016
+        mnc: "370"
+        countryIsoCodes: "gu" # Guam
+    >
+
+    overrides:<
+        # DOCOMO PACIFIC http://b/210384434
+        mnc: "470"
+        countryIsoCodes: "gu" # Guam
+    >
 >
 
 mobile_countries:<
     mcc: "311"
     countryIsoCodes: "us" # United States of America
+
+    overrides:<
+        # American Samoa Telecommunications ASTCA  http://b/328151581
+        mnc: "780"
+        countryIsoCodes: "as" # American Samoa
+    >
 >
 
 mobile_countries:<
@@ -440,6 +540,12 @@ mobile_countries:<
 mobile_countries:<
     mcc: "313"
     countryIsoCodes: "us" # United States of America
+
+    overrides:<
+        # Liberty PR  http://b/370372605
+        mnc: "790"
+        countryIsoCodes: "pr" # Puerto Rico
+    >
 >
 
 mobile_countries:<
