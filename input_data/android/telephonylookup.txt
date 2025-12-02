@@ -33,10 +33,10 @@
 # order by MCC and MNC, then country ISO code for easier maintenance.
 # There must only be one network element per MCC+MNC combination.
 #
-# **DEPRECATED:** This section is only kept for backward compatibility with older
-# code. It is no longer used by the XML generator, which now relies on overrides
-# defined in the 'mobile_countries' section (see below). It is checked during
-# XML generation for consistency with those overrides.
+# NOTE: This section needs to stay strictly in sync with the
+# 'mobile_countries' overrides below to avoid breaking the XML generation.
+# 'networks' is for single-country overrides only, please ignore multi-country
+# overrides here.
 #
 # Network:
 #
@@ -170,10 +170,9 @@ networks:<
 #
 #     countryIsoCodes:
 #     One or more lower cased ISO 3166 2-character country code. Must be known
-#     valid codes. The first countryIsoCode is used for generation of networks
-#     section in xml file for backward compatibility with older code. It must be
-#     the same as the countryIsoCode for the corresponding MNC/MCC entry in
-#     networks section of the proto file.
+#     valid codes. All overrides that apply to a single country are expected to
+#     be found in the <networks> section of the input file. Overrides that apply
+#     to multiple country codes are not expected to have a <networks> entry.
 
 mobile_countries:<
     mcc: "202"

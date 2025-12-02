@@ -85,15 +85,16 @@ public final class TelephonyLookupGenerator {
             validateMobileCountries(mobileCountriesIn, errors);
             errors.throwIfError("One or more validation errors encountered");
 
-            List<TelephonyLookupProtoFile.Network> networksIn = extractNetworks(mobileCountriesIn);
+            List<TelephonyLookupProtoFile.Network> networksInMobileCountries =
+                    extractNetworks(mobileCountriesIn);
 
-            List<TelephonyLookupProtoFile.Network> networksInDeprecated =
+            List<TelephonyLookupProtoFile.Network> networksIn =
                     telephonyLookupIn.getNetworksList();
 
-            validateNetworks(networksInDeprecated, errors);
+            validateNetworks(networksIn, errors);
             errors.throwIfError("One or more validation errors encountered");
 
-            compareNetworkLists(networksIn, networksInDeprecated, errors);
+            compareNetworkLists(networksInMobileCountries, networksIn, errors);
             errors.throwIfError("Network list comparison failed");
 
             TelephonyLookupXmlFile.TelephonyLookup telephonyLookupOut =
@@ -392,12 +393,14 @@ public final class TelephonyLookupGenerator {
             for (TelephonyLookupProtoFile.Override override : mobileCountry.getOverridesList()) {
                 String mnc = override.getMnc();
 
-                // The original Network proto structure had a single string field for
-                // countryIsoCode.
-                // To maintain compatibility and the original constraint of one entry per MCC+MNC,
-                // we use the *first* country code from the override's countryIsoCodes list.
-                // Based on the provided examples, each override appears to have only one country
-                // code.
+                // The <networks> section is a legacy format that only supports a single country
+                // per MCC+MNC. Overrides with multiple country codes are not present in this
+                // section because arbitrarily picking one country would be inaccurate.
+                if (override.getCountryIsoCodesList().size() > 1) {
+                    continue;
+                }
+
+                // Overrides with a single country are expected to be present in both lists.
                 String primaryIsoCode = override.getCountryIsoCodesList().getFirst();
 
                 TelephonyLookupProtoFile.Network network =
