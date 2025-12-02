@@ -250,6 +250,11 @@
   </mobile_country>
   <mobile_country mcc="338">
    <country>jm</country>
+   <override mnc="05">
+    <country>jm</country>
+    <country>bb</country>
+    <country>bm</country>
+   </override>
   </mobile_country>
   <mobile_country mcc="340" default="gp">
    <country>gp</country>

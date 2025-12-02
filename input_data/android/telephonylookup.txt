@@ -580,6 +580,31 @@ mobile_countries:<
 mobile_countries:<
     mcc: "338"
     countryIsoCodes: "jm" # Jamaica
+
+    overrides:<
+        # Digicel  http://b/414758970
+        mnc: "05"
+
+        countryIsoCodes: "jm" # Jamaica
+        countryIsoCodes: "bb" # Barbados
+        countryIsoCodes: "bm" # Bermuda
+
+        # Same UTC offset as "jm" (UTC-5)
+        # countryIsoCodes: "ky" # Cayman Islands
+
+        # Same UTC offset as "bb" (UTC-4)
+        # -> go/network-override-338-05
+        # countryIsoCodes: "ai" # Anguilla
+        # countryIsoCodes: "ag" # Antigua and Barbuda
+        # countryIsoCodes: "dm" # Dominica
+        # countryIsoCodes: "gd" # Grenada
+        # countryIsoCodes: "ht" # Haiti
+        # countryIsoCodes: "ms" # Montserrat
+        # countryIsoCodes: "kn" # Saint Kitts and Nevis
+        # countryIsoCodes: "lc" # Saint Lucia
+        # countryIsoCodes: "vc" # Saint Vincent and the Grenadines
+        # countryIsoCodes: "tc" # Turks and Caicos Islands
+    >
 >
 
 mobile_countries:<
