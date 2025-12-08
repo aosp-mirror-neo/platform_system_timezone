@@ -191,51 +191,27 @@ public class TelephonyLookupGeneratorTest {
     }
 
     @Test
-    public void createNetworksFromMobileCountriesOverrides_networkProtoUsesSecondCountry_fails()
-            throws Exception {
-        Network network = createNetwork("310", "100", "pr");
-        Override multiCountryOverride = createOverride("100", List.of("us", "pr", "gu"));
-        MobileCountry mobileCountry =
-                createMobileCountry("310", List.of("ky"), List.of(multiCountryOverride));
-
-        // The network proto generated from the override will use the first country in the list,
-        // which is us, while network from networks section uses the second country in the list.
-        checkGenerationFails(createTelephonyLookup(List.of(network), List.of(mobileCountry)));
-    }
-
-    @Test
-    public void createNetworkProtoUsesSecondCountry_fails() throws Exception {
-        Network network = createNetwork("310", "100", "pr");
-        Override multiCountryOverride = createOverride("100", List.of("us", "pr", "gu"));
-        MobileCountry mobileCountry =
-                createMobileCountry("310", List.of("ky"), List.of(multiCountryOverride));
-
-        // The network proto generated from the override will use the first country in the list,
-        // which is us, while network from networks section uses the second country in the list.
-        checkGenerationFails(createTelephonyLookup(List.of(network), List.of(mobileCountry)));
-    }
-
-    @Test
     public void validDataCreatesFile() throws Exception {
         Network network1 = createNetwork("123", "456", "jm");
         Network network2 = createNetwork("456", "456", "jm");
-        Network network3 = createNetwork("456", "56", "gb");
         Override override1 = createOverride("456", List.of("jm"));
         Override override2 = createOverride("56", List.of("gb", "ky"));
         MobileCountry mobileCountry1 =
                 createMobileCountry("123", List.of("gb"), List.of(override1));
         MobileCountry mobileCountry2 =
                 createMobileCountry("456", List.of("us", "fr"), List.of(override1, override2));
+        // The network for (mcc=456, mnc=56) is omitted for comparison with the network list. Its
+        // corresponding override has multiple countries, so no network is generated from it,
+        // ensuring the consistency check between the two network lists passes.
         TelephonyLookup telephonyLookupProto =
                 createTelephonyLookup(
-                        List.of(network1, network2, network3),
+                        List.of(network1, network2),
                         List.of(mobileCountry1, mobileCountry2));
 
         String telephonyLookupXml = generateTelephonyLookupXml(telephonyLookupProto);
         assertContains(
                 trimAndLinearize(telephonyLookupXml),
                 "<network mcc=\"123\" mnc=\"456\" country=\"jm\"/>",
-                "<network mcc=\"456\" mnc=\"56\" country=\"gb\"/>",
                 "<network mcc=\"456\" mnc=\"456\" country=\"jm\"/>",
                 """
                 <mobile_country mcc="123"><country>gb</country>\
