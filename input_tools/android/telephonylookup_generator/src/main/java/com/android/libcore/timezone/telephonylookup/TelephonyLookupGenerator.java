@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +91,10 @@ public final class TelephonyLookupGenerator {
                     extractNetworks(mobileCountriesIn);
 
             List<TelephonyLookupProtoFile.Network> networksIn =
-                    telephonyLookupIn.getNetworksList();
+                    telephonyLookupIn.getNetworksList().stream().sorted(
+                            Comparator.comparing(TelephonyLookupProtoFile.Network::getMcc)
+                                    .thenComparing(TelephonyLookupProtoFile.Network::getMnc))
+                    .collect(Collectors.toList());
 
             validateNetworks(networksIn, errors);
             errors.throwIfError("One or more validation errors encountered");
