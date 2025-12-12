@@ -93,7 +93,9 @@ public class TimeZoneVersionTest {
 
             // ICU version in B is 76. When we update it in a next release major version
             // should be updated too.
-            if (VersionInfo.ICU_VERSION.getMajor() > 76) {
+            // However, for a short time period before 26Q2 ICU 77 will be used. Checking for 78
+            // explicitly - that's what will be used in 26Q2.
+            if (VersionInfo.ICU_VERSION.getMajor() >= 78) {
                 assertEquals("010", majorVersion);
             } else {
                 assertEquals("009", majorVersion);
