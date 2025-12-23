@@ -655,10 +655,14 @@ countryMappings {
 countryMappings {
   isoCode: "cy"
   timeZoneIds: "Asia/Nicosia"
-  timeZoneIds: "Asia/Famagusta"
   timeZoneLinks {
     alternativeId: "Europe/Nicosia"
     preferredId: "Asia/Nicosia"
+  }
+  timeZoneReplacements {
+    replacedId: "Asia/Famagusta"
+    replacementId: "Asia/Nicosia"
+    fromMillis: 1509238800000
   }
 }
 countryMappings {
@@ -1489,27 +1493,30 @@ countryMappings {
 countryMappings {
   isoCode: "ru"
   timeZoneIds: "Asia/Kamchatka"
-  timeZoneIds: "Asia/Anadyr"
   timeZoneIds: "Asia/Magadan"
   timeZoneIds: "Asia/Sakhalin"
-  timeZoneIds: "Asia/Srednekolymsk"
   timeZoneIds: "Asia/Vladivostok"
   timeZoneIds: "Asia/Chita"
   timeZoneIds: "Asia/Irkutsk"
   timeZoneIds: "Asia/Krasnoyarsk"
-  timeZoneIds: "Asia/Novosibirsk"
-  timeZoneIds: "Asia/Barnaul"
   timeZoneIds: "Asia/Omsk"
   timeZoneIds: "Asia/Yekaterinburg"
   timeZoneIds: "Europe/Samara"
-  timeZoneIds: "Europe/Saratov"
   timeZoneIds: "Europe/Moscow"
-  timeZoneIds: "Europe/Volgograd"
-  timeZoneIds: "Europe/Kirov"
   timeZoneIds: "Europe/Kaliningrad"
   timeZoneLinks {
     alternativeId: "W-SU"
     preferredId: "Europe/Moscow"
+  }
+  timeZoneReplacements {
+    replacedId: "Asia/Anadyr"
+    replacementId: "Asia/Kamchatka"
+    fromMillis: 1301151600000
+  }
+  timeZoneReplacements {
+    replacedId: "Asia/Srednekolymsk"
+    replacementId: "Asia/Magadan"
+    fromMillis: 1461427200000
   }
   timeZoneReplacements {
     replacedId: "Asia/Ust-Nera"
@@ -1532,19 +1539,44 @@ countryMappings {
     fromMillis: 1459022400000
   }
   timeZoneReplacements {
+    replacedId: "Asia/Novosibirsk"
+    replacementId: "Asia/Krasnoyarsk"
+    fromMillis: 1469304000000
+  }
+  timeZoneReplacements {
+    replacedId: "Asia/Barnaul"
+    replacementId: "Asia/Krasnoyarsk"
+    fromMillis: 1459022400000
+  }
+  timeZoneReplacements {
     replacedId: "Asia/Tomsk"
-    replacementId: "Asia/Barnaul"
+    replacementId: "Asia/Krasnoyarsk"
     fromMillis: 1464465600000
   }
   timeZoneReplacements {
-    replacedId: "Europe/Ulyanovsk"
-    replacementId: "Europe/Saratov"
+    replacedId: "Europe/Saratov"
+    replacementId: "Europe/Samara"
     fromMillis: 1480806000000
+  }
+  timeZoneReplacements {
+    replacedId: "Europe/Ulyanovsk"
+    replacementId: "Europe/Samara"
+    fromMillis: 1459033200000
   }
   timeZoneReplacements {
     replacedId: "Europe/Astrakhan"
     replacementId: "Europe/Ulyanovsk"
     fromMillis: 701823600000
+  }
+  timeZoneReplacements {
+    replacedId: "Europe/Volgograd"
+    replacementId: "Europe/Moscow"
+    fromMillis: 1609020000000
+  }
+  timeZoneReplacements {
+    replacedId: "Europe/Kirov"
+    replacementId: "Europe/Moscow"
+    fromMillis: 1414274400000
   }
 }
 countryMappings {
@@ -1951,7 +1983,7 @@ countryMappings {
   timeZoneReplacements {
     replacedId: "Asia/Samarkand"
     replacementId: "Asia/Tashkent"
-    fromMillis: 670366800000
+    fromMillis: 686091600000
   }
 }
 countryMappings {
