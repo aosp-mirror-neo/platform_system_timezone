@@ -237,7 +237,7 @@
   </country>
   <country code="cy" default="Asia/Nicosia" everutc="n">
    <id alts="Europe/Nicosia">Asia/Nicosia</id>
-   <id>Asia/Famagusta</id>
+   <id notafter="1509238800000" repl="Asia/Nicosia">Asia/Famagusta</id>
   </country>
   <country code="cz" default="Europe/Prague" everutc="n">
    <id>Europe/Prague</id>
@@ -684,10 +684,10 @@
   </country>
   <country code="ru" default="Europe/Moscow" everutc="n">
    <id>Asia/Kamchatka</id>
-   <id>Asia/Anadyr</id>
+   <id notafter="1301151600000" repl="Asia/Kamchatka">Asia/Anadyr</id>
    <id>Asia/Magadan</id>
    <id>Asia/Sakhalin</id>
-   <id>Asia/Srednekolymsk</id>
+   <id notafter="1461427200000" repl="Asia/Magadan">Asia/Srednekolymsk</id>
    <id>Asia/Vladivostok</id>
    <id notafter="1315828800000" repl="Asia/Vladivostok">Asia/Ust-Nera</id>
    <id>Asia/Chita</id>
@@ -696,18 +696,18 @@
    <id>Asia/Irkutsk</id>
    <id>Asia/Krasnoyarsk</id>
    <id notafter="1459022400000" repl="Asia/Krasnoyarsk">Asia/Novokuznetsk</id>
-   <id>Asia/Novosibirsk</id>
-   <id>Asia/Barnaul</id>
-   <id notafter="1464465600000" repl="Asia/Barnaul">Asia/Tomsk</id>
+   <id notafter="1469304000000" repl="Asia/Krasnoyarsk">Asia/Novosibirsk</id>
+   <id notafter="1459022400000" repl="Asia/Krasnoyarsk">Asia/Barnaul</id>
+   <id notafter="1464465600000" repl="Asia/Krasnoyarsk">Asia/Tomsk</id>
    <id>Asia/Omsk</id>
    <id>Asia/Yekaterinburg</id>
    <id>Europe/Samara</id>
-   <id>Europe/Saratov</id>
-   <id notafter="1480806000000" repl="Europe/Saratov">Europe/Ulyanovsk</id>
+   <id notafter="1480806000000" repl="Europe/Samara">Europe/Saratov</id>
+   <id notafter="1459033200000" repl="Europe/Samara">Europe/Ulyanovsk</id>
    <id notafter="701823600000" repl="Europe/Ulyanovsk">Europe/Astrakhan</id>
    <id alts="W-SU">Europe/Moscow</id>
-   <id>Europe/Volgograd</id>
-   <id>Europe/Kirov</id>
+   <id notafter="1609020000000" repl="Europe/Moscow">Europe/Volgograd</id>
+   <id notafter="1414274400000" repl="Europe/Moscow">Europe/Kirov</id>
    <id>Europe/Kaliningrad</id>
   </country>
   <country code="rw" default="Africa/Kigali" everutc="n">
@@ -871,7 +871,7 @@
   </country>
   <country code="uz" default="Asia/Tashkent" everutc="n">
    <id>Asia/Tashkent</id>
-   <id notafter="670366800000" repl="Asia/Tashkent">Asia/Samarkand</id>
+   <id notafter="686091600000" repl="Asia/Tashkent">Asia/Samarkand</id>
   </country>
   <country code="va" default="Europe/Vatican" everutc="n">
    <id>Europe/Vatican</id>

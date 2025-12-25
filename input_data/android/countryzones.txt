@@ -1184,6 +1184,9 @@ countries:<
 >
 
 # CYPRUS
+# Priorities assigned using:
+# https://en.wikipedia.org/wiki/List_of_cities,_towns_and_villages_in_Cyprus
+# Priority is based on city population.
 countries:<
   isoCode:"cy"
   defaultTimeZoneId:"Asia/Nicosia"
@@ -1191,10 +1194,14 @@ countries:<
     utcOffset:"2:00"
     id:"Asia/Nicosia"
     alternativeIds:"Europe/Nicosia"
+    # 255K
+    priority: 255
   >
   timeZoneMappings:<
     utcOffset:"2:00"
     id:"Asia/Famagusta"
+    # 40K
+    priority: 40
   >
 >
 

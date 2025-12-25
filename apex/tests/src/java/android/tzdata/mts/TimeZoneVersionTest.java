@@ -59,7 +59,7 @@ public class TimeZoneVersionTest {
     private static final int MINIMAL_SUPPORTED_MAJOR_VERSION = 8;
     // Android B.
     // LINT.IfChange
-    private static final int THE_LATEST_MAJOR_VERSION = 9;
+    private static final int THE_LATEST_MAJOR_VERSION = 10;
     // LINT.ThenChange(/android_icu4j/libcore_bridge/src/java/com/android/i18n/timezone/TzDataSetVersion.java)
 
     @Test

@@ -112,8 +112,7 @@ public class ZoneOffsetPeriodTest {
         BasicTimeZone honoluluTz = (BasicTimeZone) TimeZone.getTimeZone("Pacific/Honolulu");
         int honoluluRawOffset = -36000000;
         int honoluluDstOffset = 0;
-        // ICU doesn't have a name for this zone for 1970.
-        String honoluluName = null;
+        String honoluluName = "Hawaii-Aleutian Standard Time";
         ZoneOffsetPeriod honoluluPeriod =
                 ZoneOffsetPeriod.create(timeZoneNames, honoluluTz, startInstant, endInstant);
         assertEquals(startInstant, honoluluPeriod.getStartInstant());
@@ -145,10 +144,7 @@ public class ZoneOffsetPeriodTest {
         BasicTimeZone honoluluTz = (BasicTimeZone) TimeZone.getTimeZone("Pacific/Honolulu");
         int honoluluRawOffset = -36000000;
         int honoluluDstOffset = 0;
-        // ICU doesn't have a display name for the zone in 1970....
-        String honoluluOldName = null;
-        // ... but it does in 1990.
-        String honoluluNewName = "Hawaii-Aleutian Standard Time";
+        String honoluluName = "Hawaii-Aleutian Standard Time";
 
         Instant startInstant = Instant.EPOCH; /* 1970-01-01T00:00:00Z */
         // endInstant is an arbitrary "ceiling" time value for a period if there are no transitions.
@@ -168,12 +164,12 @@ public class ZoneOffsetPeriodTest {
         assertEquals(partitionInstant, shards[0].getEndInstant());
         assertEquals(honoluluRawOffset, shards[0].getRawOffsetMillis());
         assertEquals(honoluluDstOffset, shards[0].getDstOffsetMillis());
-        assertEquals(honoluluOldName, shards[0].getName());
+        assertEquals(honoluluName, shards[0].getName());
 
         assertEquals(partitionInstant, shards[1].getStartInstant());
         assertEquals(endInstant, shards[1].getEndInstant());
         assertEquals(honoluluRawOffset, shards[1].getRawOffsetMillis());
         assertEquals(honoluluDstOffset, shards[1].getDstOffsetMillis());
-        assertEquals(honoluluNewName, shards[1].getName());
+        assertEquals(honoluluName, shards[1].getName());
     }
 }
