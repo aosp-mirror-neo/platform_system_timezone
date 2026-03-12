@@ -9,6 +9,7 @@
   <network mcc="234" mnc="50" country="je"/>
   <network mcc="234" mnc="55" country="je"/>
   <network mcc="234" mnc="58" country="im"/>
+  <network mcc="244" mnc="14" country="ax"/>
   <network mcc="310" mnc="110" country="gu"/>
   <network mcc="310" mnc="140" country="gu"/>
   <network mcc="310" mnc="370" country="gu"/>
@@ -106,6 +107,9 @@
   </mobile_country>
   <mobile_country mcc="244">
    <country>fi</country>
+   <override mnc="14">
+    <country>ax</country>
+   </override>
   </mobile_country>
   <mobile_country mcc="246">
    <country>lt</country>
