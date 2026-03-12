@@ -122,6 +122,13 @@ networks:<
 >
 
 networks:<
+  # ALCOM  http://b/395813374
+  mcc: "244"
+  mnc: "14"
+  countryIsoCode: "ax" # Åland
+>
+
+networks:<
   # Liberty PR  http://b/370372605
   mcc: "313"
   mnc: "790"
@@ -332,6 +339,12 @@ mobile_countries:<
 mobile_countries:<
     mcc: "244"
     countryIsoCodes: "fi" # Finland
+
+    overrides:<
+        # ALCOM  http://b/395813374
+        mnc: "14"
+        countryIsoCodes: "ax" # Åland
+    >
 >
 
 mobile_countries:<
